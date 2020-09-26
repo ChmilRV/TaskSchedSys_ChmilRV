@@ -9,49 +9,49 @@ using System.Collections.Generic;
 Критерии поиска: по датам, по тегам, по приоритету и так далее.*/
 namespace TaskSchedulingSystem_ChmilRV
 {
-    public interface IBuilder
+    public interface INote
     {
-        void BuildPartA();
-        void BuildPartB();
-        void BuildPartC();
+        void NoteParty();
+        void NoteBirthday();
+        void NoteReminder();
     }
-    public class ConcreteBuilder : IBuilder
+    public class CreateNote : INote
     {
-        private Product product = new Product();
-        public ConcreteBuilder() { Reset(); }
-        public void Reset() { product = new Product(); }
-        public void BuildPartA() { product.Add("PartA1"); }
-        public void BuildPartB() { product.Add("PartB1"); }
-        public void BuildPartC() { product.Add("PartC1"); }
-        public Product GetProduct()
+        private Note note = new Note();
+        public CreateNote() { Reset(); }
+        public void Reset() { note = new Note(); }
+        public void NoteParty() { note.Add("Запись о мероприятии"); }
+        public void NoteBirthday() { note.Add("Запись о дне рождения"); }
+        public void NoteReminder() { note.Add("Напоминание"); }
+        public Note GetNote()
         {
-            Product result = product;
+            Note resultNote = note;
             Reset();
-            return result;
+            return resultNote;
         }
     }
-    public class Product
+    public class Note
     {
-        private List<object> parts = new List<object>();
-        public void Add(string part) { parts.Add(part); }
-        public string ListParts()
+        private List<object> notes = new List<object>();
+        public void Add(string part) { notes.Add(part); }
+        public string ListNotes()
         {
             string str = string.Empty;
-            for (int i = 0; i < parts.Count; i++) { str += parts[i] + ", "; }
+            for (int i = 0; i < notes.Count; i++) { str += notes[i] + ", "; }
             str = str.Remove(str.Length - 2);
-            return "Product parts: " + str + "\n";
+            return "Заметки: " + str + "\n";
         }
     }
-    public class Director
+    public class Dairy
     {
-        private IBuilder builder;
-        public IBuilder Builder { set { builder = value; } }
-        public void buildMinimalViableProduct() { builder.BuildPartC(); }
-        public void buildFullFeaturedProduct()
+        private INote note;
+        public INote Note { set { note = value; } }
+        public void makeSimpleNote() { note.NoteReminder(); }
+        public void makeManyNotes()
         {
-            builder.BuildPartA();
-            builder.BuildPartB();
-            builder.BuildPartC();
+            note.NoteParty();
+            note.NoteBirthday();
+            note.NoteReminder();
         }
     }
 
@@ -59,25 +59,23 @@ namespace TaskSchedulingSystem_ChmilRV
     {
         static void Main(string[] args)
         {
-            // порождающий - строитель
-            // структурный - компоновщик
-            Director director = new Director();
-            ConcreteBuilder builder = new ConcreteBuilder();
-            director.Builder = builder;
-            WriteLine("Standard basic product:");
-            director.buildMinimalViableProduct();
-            WriteLine(builder.GetProduct().ListParts());
-            WriteLine("Standard full featured product:");
-            director.buildFullFeaturedProduct();
-            WriteLine(builder.GetProduct().ListParts());
-            WriteLine("Custom product:");
-            builder.BuildPartA();
-            builder.BuildPartC();
-            builder.BuildPartB();
-            builder.BuildPartA();
-            builder.BuildPartC();
-            builder.BuildPartA();
-            Write(builder.GetProduct().ListParts());
+            Dairy dairy = new Dairy();
+            CreateNote note = new CreateNote();
+            dairy.Note = note;
+            WriteLine("Одиночная запись:");
+            dairy.makeSimpleNote();
+            WriteLine(note.GetNote().ListNotes());
+            WriteLine("Групповая запись:");
+            dairy.makeManyNotes();
+            WriteLine(note.GetNote().ListNotes());
+            WriteLine("Настраиваемая запись:");
+            note.NoteParty();
+            note.NoteReminder();
+            note.NoteBirthday();
+            note.NoteParty();
+            note.NoteReminder();
+            note.NoteParty();
+            Write(note.GetNote().ListNotes());
             ReadKey();
         }
     }
